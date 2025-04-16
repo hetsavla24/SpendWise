@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Box, 
   Drawer, 
-  useTheme, 
   AppBar, 
   Toolbar, 
   Typography, 
@@ -21,13 +20,18 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { Settings, Logout, Person } from '@mui/icons-material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../contexts/CurrencyContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const theme = useTheme();
+  const { darkMode } = useTheme();
+  const { t } = useTranslation();
+  const { currency } = useCurrency();
   const drawerWidth = 280;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -48,7 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         sx={{
           width: `calc(100% - ${drawerWidth}px)`,
           ml: `${drawerWidth}px`,
-          background: 'white',
+          background: darkMode ? 'rgba(18, 18, 18, 0.9)' : 'white',
           color: 'primary.main',
           boxShadow: 'none',
           zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -87,7 +91,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   fontSize: '1.8rem'
                 }}
               >
-                Welcome back, Yash!
+                {t('welcome_back', { name: 'Yash' })}
               </Typography>
               <Typography 
                 variant="subtitle1" 
@@ -100,7 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   fontWeight: 500
                 }}
               >
-                Your financial overview is looking great this month! 
+                {t('financial_overview_message')}
                 <EmojiEventsIcon sx={{ fontSize: 20 }} />
               </Typography>
             </Box>
@@ -119,7 +123,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     Yash Sawant
                   </Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    Premium User
+                    {t('premium_user')}
                   </Typography>
                 </Box>
                 <IconButton 
@@ -157,8 +161,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            backgroundColor: theme.palette.background.default,
-            borderRight: `1px solid ${theme.palette.divider}`,
+            backgroundColor: darkMode ? 'rgba(18, 18, 18, 0.9)' : 'background.default',
+            borderRight: '1px solid',
+            borderColor: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'divider',
             boxShadow: '2px 0 4px rgba(0,0,0,0.05)',
           },
         }}
@@ -175,7 +180,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           p: 4,
           mt: 8,
           position: 'relative',
-          backgroundColor: theme.palette.background.default
+          backgroundColor: darkMode ? 'rgba(18, 18, 18, 0.9)' : 'background.default'
         }}
       >
         {children}
@@ -197,20 +202,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <ListItemIcon>
               <Person fontSize="small" />
             </ListItemIcon>
-            Profile
+            {t('profile')}
           </MenuItem>
           <MenuItem onClick={handleClose}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
-            Settings
+            {t('settings')}
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleClose}>
             <ListItemIcon>
               <Logout fontSize="small" />
             </ListItemIcon>
-            Logout
+            {t('logout')}
           </MenuItem>
         </Menu>
       </Box>

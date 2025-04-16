@@ -26,6 +26,8 @@ import {
   Pie,
   Cell,
 } from 'recharts';
+import { useCurrencyFormatter } from '../../hooks/useCurrencyFormatter';
+import { useTranslation } from 'react-i18next';
 
 // Define TypeScript interfaces
 interface DashboardData {
@@ -60,6 +62,8 @@ interface DashboardData {
 
 const Dashboard = () => {
   const theme = useTheme();
+  const formatCurrency = useCurrencyFormatter();
+  const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -91,14 +95,6 @@ const Dashboard = () => {
     return ((current - previous) / previous * 100).toFixed(1);
   };
 
-  // Format currency for Indian Rupees
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount);
-  };
-
   // Profile menu handlers
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -128,7 +124,7 @@ const Dashboard = () => {
           }}>
             <Stack spacing={1}>
               <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                Total Balance
+                {t('total_balance')}
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
@@ -169,7 +165,7 @@ const Dashboard = () => {
           }}>
             <Stack spacing={1}>
               <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                Monthly Income
+                {t('monthly_income')}
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
@@ -207,7 +203,7 @@ const Dashboard = () => {
           }}>
             <Stack spacing={1}>
               <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                Monthly Expenses
+                {t('monthly_expenses')}
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
@@ -245,11 +241,11 @@ const Dashboard = () => {
           }}>
             <Stack spacing={1}>
               <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                Net Savings
+                {t('net_savings')}
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
-                background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+                background: 'linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>
@@ -263,7 +259,7 @@ const Dashboard = () => {
                   py: 0.5,
                   borderRadius: 1,
                 }}>
-                  +2.0%
+                  +2.1%
                 </Typography>
               </Box>
             </Stack>

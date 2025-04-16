@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Avatar, styled, useTheme, ButtonBase, Menu, MenuItem, Divider } from '@mui/material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Typography, Avatar, styled, ButtonBase, Menu, MenuItem, Divider } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -10,6 +10,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { Person, Logout } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const SidebarContainer = styled(Box)(({ theme }) => ({
   width: 240,
@@ -66,64 +68,65 @@ const SidebarMenuItem = styled(ListItem)<{ active?: boolean }>(({ theme, active 
   borderLeft: active ? `4px solid ${theme.palette.primary.main}` : '4px solid transparent',
 }));
 
-const menuItems = [
-  { 
-    text: 'Dashboard', 
-    icon: <DashboardIcon />, 
-    path: '/',
-    apiEndpoint: '/api/dashboard/summary'
-  },
-  { 
-    text: 'Transactions', 
-    icon: <AccountBalanceWalletIcon />, 
-    path: '/transactions',
-    apiEndpoint: '/api/transactions'
-  },
-  { 
-    text: 'Budget', 
-    icon: <AttachMoneyIcon />, 
-    path: '/budget',
-    apiEndpoint: '/api/budgets'
-  },
-  { 
-    text: 'Reports', 
-    icon: <AssessmentIcon />, 
-    path: '/reports',
-    apiEndpoint: '/api/reports'
-  },
-  { 
-    text: 'Goals', 
-    icon: <FlagIcon />, 
-    path: '/goals',
-    apiEndpoint: '/api/goals'
-  },
-  { 
-    text: 'Investments', 
-    icon: <ShowChartIcon />, 
-    path: '/investments',
-    apiEndpoint: '/api/investments'
-  },
-  { 
-    text: 'Calendar', 
-    icon: <CalendarTodayIcon />, 
-    path: '/calendar',
-    apiEndpoint: '/api/calendar'
-  },
-  { 
-    text: 'Settings', 
-    icon: <SettingsIcon />, 
-    path: '/settings',
-    apiEndpoint: '/api/settings'
-  },
-];
-
 const Sidebar = () => {
-  const theme = useTheme();
+  const { darkMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const menuItems = [
+    { 
+      text: t('dashboard'), 
+      icon: <DashboardIcon />, 
+      path: '/',
+      apiEndpoint: '/api/dashboard/summary'
+    },
+    { 
+      text: t('transactions'), 
+      icon: <AccountBalanceWalletIcon />, 
+      path: '/transactions',
+      apiEndpoint: '/api/transactions'
+    },
+    { 
+      text: t('budget'), 
+      icon: <AttachMoneyIcon />, 
+      path: '/budget',
+      apiEndpoint: '/api/budgets'
+    },
+    { 
+      text: t('reports'), 
+      icon: <AssessmentIcon />, 
+      path: '/reports',
+      apiEndpoint: '/api/reports'
+    },
+    { 
+      text: t('goals'), 
+      icon: <FlagIcon />, 
+      path: '/goals',
+      apiEndpoint: '/api/goals'
+    },
+    { 
+      text: t('investments'), 
+      icon: <ShowChartIcon />, 
+      path: '/investments',
+      apiEndpoint: '/api/investments'
+    },
+    { 
+      text: t('calendar'), 
+      icon: <CalendarTodayIcon />, 
+      path: '/calendar',
+      apiEndpoint: '/api/calendar'
+    },
+    { 
+      text: t('settings'), 
+      icon: <SettingsIcon />, 
+      path: '/settings',
+      apiEndpoint: '/api/settings'
+    },
+  ];
 
   return (
-    <SidebarContainer>
+    <SidebarContainer sx={{ bgcolor: darkMode ? 'rgba(18, 18, 18, 0.9)' : 'background.paper' }}>
       <LogoContainer>
         <Typography 
           variant="h4" 
@@ -150,7 +153,7 @@ const Sidebar = () => {
             fontWeight: 500
           }}
         >
-          Financial Management
+          {t('financial_management')}
         </Typography>
       </LogoContainer>
 
@@ -161,14 +164,14 @@ const Sidebar = () => {
             active={location.pathname === item.path}
             onClick={() => navigate(item.path)}
           >
-            <ListItemIcon sx={{ color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.secondary, minWidth: 40 }}>
+            <ListItemIcon sx={{ color: location.pathname === item.path ? 'primary.main' : 'text.secondary', minWidth: 40 }}>
               {item.icon}
             </ListItemIcon>
             <ListItemText 
               primary={item.text} 
               sx={{ 
                 '& .MuiListItemText-primary': {
-                  color: location.pathname === item.path ? theme.palette.primary.main : theme.palette.text.primary,
+                  color: location.pathname === item.path ? 'primary.main' : 'text.primary',
                   fontWeight: location.pathname === item.path ? 600 : 400,
                 }
               }}

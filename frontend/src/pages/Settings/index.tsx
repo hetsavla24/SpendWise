@@ -20,12 +20,14 @@ import {
   Stack,
 } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useCurrency } from '../../contexts/CurrencyContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
+import { getLanguageDisplayName } from '../../utils/formatters';
 
 interface SettingsState {
-  darkMode: boolean;
   notifications: boolean;
-  currency: string;
-  language: string;
   emailNotifications: boolean;
   budgetAlerts: boolean;
   weeklyReports: boolean;
@@ -33,11 +35,13 @@ interface SettingsState {
 }
 
 const Settings: React.FC = () => {
+  const { darkMode, toggleDarkMode } = useTheme();
+  const { currency, setCurrency } = useCurrency();
+  const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
+
   const [settings, setSettings] = useState<SettingsState>({
-    darkMode: false,
     notifications: true,
-    currency: 'USD',
-    language: 'English',
     emailNotifications: true,
     budgetAlerts: true,
     weeklyReports: true,
@@ -59,7 +63,7 @@ const Settings: React.FC = () => {
   };
 
   const currencies = ['USD', 'EUR', 'GBP', 'INR', 'JPY'];
-  const languages = ['English', 'Spanish', 'French', 'German', 'Hindi'];
+  const languages = ['en', 'es', 'fr', 'de', 'hi'];
 
   return (
     <Box sx={{ p: 3 }}>
@@ -74,10 +78,10 @@ const Settings: React.FC = () => {
         }}
       >
         <Typography variant="h4" gutterBottom>
-          Settings
+          {t('settings')}
         </Typography>
         <Typography>
-          Customize your SpendWise experience
+          {t('customize_experience')}
         </Typography>
       </Box>
 
@@ -85,19 +89,19 @@ const Settings: React.FC = () => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'medium' }}>
-              Appearance & Language
+              {t('appearance_language')}
             </Typography>
             <List>
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Dark Mode</Typography>}
-                  secondary="Enable dark theme for better visibility in low light"
+                  primary={<Typography variant="subtitle1">{t('darkMode')}</Typography>}
+                  secondary={t('dark_mode_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
                     edge="end"
-                    checked={settings.darkMode}
-                    onChange={(e) => handleSettingChange('darkMode', e.target.checked)}
+                    checked={darkMode}
+                    onChange={toggleDarkMode}
                     color="primary"
                   />
                 </ListItemSecondaryAction>
@@ -105,16 +109,16 @@ const Settings: React.FC = () => {
               <Divider />
               <ListItem>
                 <FormControl fullWidth>
-                  <InputLabel id="language-label">Language</InputLabel>
+                  <InputLabel id="language-label">{t('language')}</InputLabel>
                   <Select
                     labelId="language-label"
-                    value={settings.language}
-                    label="Language"
-                    onChange={(e) => handleSettingChange('language', e.target.value)}
+                    value={language}
+                    label={t('language')}
+                    onChange={(e) => setLanguage(e.target.value)}
                   >
                     {languages.map((lang) => (
                       <MenuItem key={lang} value={lang}>
-                        {lang}
+                        {getLanguageDisplayName(lang)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -127,21 +131,21 @@ const Settings: React.FC = () => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'medium' }}>
-              Currency & Regional
+              {t('currency_regional')}
             </Typography>
             <List>
               <ListItem>
                 <FormControl fullWidth>
-                  <InputLabel id="currency-label">Currency</InputLabel>
+                  <InputLabel id="currency-label">{t('currency')}</InputLabel>
                   <Select
                     labelId="currency-label"
-                    value={settings.currency}
-                    label="Currency"
-                    onChange={(e) => handleSettingChange('currency', e.target.value)}
+                    value={currency}
+                    label={t('currency')}
+                    onChange={(e) => setCurrency(e.target.value)}
                   >
-                    {currencies.map((currency) => (
-                      <MenuItem key={currency} value={currency}>
-                        {currency}
+                    {currencies.map((curr) => (
+                      <MenuItem key={curr} value={curr}>
+                        {curr}
                       </MenuItem>
                     ))}
                   </Select>
@@ -154,13 +158,13 @@ const Settings: React.FC = () => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'medium' }}>
-              Notifications & Alerts
+              {t('notifications_alerts')}
             </Typography>
             <List>
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Push Notifications</Typography>}
-                  secondary="Receive important updates and alerts"
+                  primary={<Typography variant="subtitle1">{t('push_notifications')}</Typography>}
+                  secondary={t('push_notifications_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
@@ -174,8 +178,8 @@ const Settings: React.FC = () => {
               <Divider />
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Email Notifications</Typography>}
-                  secondary="Get updates and reports via email"
+                  primary={<Typography variant="subtitle1">{t('email_notifications')}</Typography>}
+                  secondary={t('email_notifications_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
@@ -189,8 +193,8 @@ const Settings: React.FC = () => {
               <Divider />
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Budget Alerts</Typography>}
-                  secondary="Get notified when approaching budget limits"
+                  primary={<Typography variant="subtitle1">{t('budget_alerts')}</Typography>}
+                  secondary={t('budget_alerts_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
@@ -208,13 +212,13 @@ const Settings: React.FC = () => {
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'medium' }}>
-              Additional Features
+              {t('additional_features')}
             </Typography>
             <List>
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Weekly Reports</Typography>}
-                  secondary="Receive weekly spending analysis reports"
+                  primary={<Typography variant="subtitle1">{t('weekly_reports')}</Typography>}
+                  secondary={t('weekly_reports_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
@@ -228,8 +232,8 @@ const Settings: React.FC = () => {
               <Divider />
               <ListItem>
                 <ListItemText
-                  primary={<Typography variant="subtitle1">Auto Sync</Typography>}
-                  secondary="Automatically sync data across devices"
+                  primary={<Typography variant="subtitle1">{t('auto_sync')}</Typography>}
+                  secondary={t('auto_sync_description')}
                 />
                 <ListItemSecondaryAction>
                   <Switch
