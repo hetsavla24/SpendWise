@@ -120,15 +120,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- [Your Name] - Full Stack Developer
-- [Team Member] - ML Engineer
-- [Team Member] - UI/UX Designer
+- [YASH SAWANT] - Full Stack Developer
+- [VIHAAN SHINE] - ML Engineer
+- [PRATHAM SHIRBATE] - UI/UX Designer
 
 ## 📞 Contact
 
 For any queries or support, please reach out to:
 - Email: your.email@example.com
-- GitHub Issues: [Create an issue](https://github.com/yourusername/spendwise/issues)
+- GitHub Issues: [Create an issue](https://github.com/SytherAsh/SpendWise/issues)
 
 ---
 
