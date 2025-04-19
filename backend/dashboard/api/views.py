@@ -15,9 +15,19 @@ logger = logging.getLogger(__name__)
 class DashboardAnalyticsView(APIView):
     def get(self, request):
         try:
+            # Get date parameters
+            start_date = request.query_params.get('start_date')
+            end_date = request.query_params.get('end_date')
+
             # Read the CSV file
             df = pd.read_csv('csvs/Merge_Proccessed.csv')
             df['Transaction_Date'] = pd.to_datetime(df['Transaction_Date'])
+
+            # Filter data based on date range if provided
+            if start_date and end_date:
+                start_date = pd.to_datetime(start_date)
+                end_date = pd.to_datetime(end_date)
+                df = df[(df['Transaction_Date'] >= start_date) & (df['Transaction_Date'] <= end_date)]
 
             # Calculate summary
             total_credit = df['Credit'].sum()
@@ -56,7 +66,7 @@ class DashboardAnalyticsView(APIView):
                     'credit': float(row['Credit'])
                 })
 
-            # Calculate savings goal
+            # Calculate savings goal based on filtered data
             monthly_savings = []
             for _, group in df.groupby(df['Transaction_Date'].dt.strftime('%Y-%m')):
                 savings = group['Credit'].sum() - group['Debit'].sum()
