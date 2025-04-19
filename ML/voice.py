@@ -1,10 +1,12 @@
 # voice.py
 import streamlit as st
 from vapi_python import Vapi
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-# --- CONFIGURE WITH YOUR VAPI DETAILS ---
-API_KEY = "969d188d-61d3-4284-a13b-9c2ec4cc3294"
-ASSISTANT_ID = "2bb33599-178f-4be1-96bf-afd74aa0e0e0"
+API_KEY = os.getenv("API_KEY")
+ASSISTANT_ID = os.getenv("ASSISTANT_ID")
 
 # Streamlit Page Setup
 st.set_page_config(page_title="SpendWise Voice Assistant", page_icon="🎙️")

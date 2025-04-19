@@ -1,50 +1,130 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  TextField,
   IconButton,
   Typography,
   Paper,
+  CircularProgress,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
-import SendIcon from '@mui/icons-material/Send';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
 
-const ChatBot = () => {
+const VoiceAssistant = () => {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState([
-    { type: 'bot', text: 'Hi! I\'m your SpendWise assistant. How can I help you today?' },
+    { type: 'bot', text: 'Hi! I\'m your SpendWise voice assistant. Click the microphone to start talking!' },
   ]);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // Poll for voice assistant status when listening
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
 
-  const handleSend = () => {
-    if (message.trim()) {
-      // Add user message
-      setChatHistory([...chatHistory, { type: 'user', text: message }]);
-      
-      // Simulate bot response
-      setTimeout(() => {
-        setChatHistory(prev => [...prev, {
-          type: 'bot',
-          text: 'Thanks for your message! Our AI is currently in development. Please check back later for full functionality.'
-        }]);
+    if (isListening) {
+      intervalId = setInterval(async () => {
+        try {
+          const response = await fetch('/api/dashboard/voice/status/');
+          const data = await response.json();
+          
+          if (!data.is_active) {
+            // Voice assistant stopped, get the final response
+            await handleStopListening();
+          }
+        } catch (error) {
+          console.error('Error checking voice status:', error);
+        }
       }, 1000);
-      
-      setMessage('');
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isListening]);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    if (isListening) {
+      handleStopListening();
+    }
+    setOpen(false);
+  };
+
+  const handleStartListening = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/dashboard/voice/start/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start voice assistant');
+      }
+
+      setIsListening(true);
+      setChatHistory(prev => [...prev, { type: 'bot', text: 'Listening... Speak now! 🎧' }]);
+    } catch (error) {
+      setError('Failed to start voice assistant. Please try again.');
+      console.error('Error starting voice assistant:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStopListening = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/dashboard/voice/stop/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to stop voice assistant');
+      }
+
+      const data = await response.json();
+      setIsListening(false);
+
+      // Add transcription to chat history if available
+      if (data.transcription) {
+        setChatHistory(prev => [...prev, { type: 'user', text: data.transcription }]);
+      }
+
+      // Add assistant response to chat history if available
+      if (data.response) {
+        setChatHistory(prev => [...prev, { type: 'bot', text: data.response }]);
+      } else {
+        setChatHistory(prev => [...prev, { type: 'bot', text: 'Stopped listening.' }]);
+      }
+    } catch (error) {
+      setError('Failed to stop voice assistant. Please try again.');
+      console.error('Error stopping voice assistant:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {/* Chat Button */}
       <Box
         onClick={handleOpen}
         sx={{
@@ -70,7 +150,6 @@ const ChatBot = () => {
         <ChatIcon />
       </Box>
 
-      {/* Chat Dialog */}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -82,11 +161,12 @@ const ChatBot = () => {
             maxHeight: 600,
             display: 'flex',
             flexDirection: 'column',
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1a1a1a' : '#ffffff',
           },
         }}
       >
         <DialogTitle sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">SpendWise Assistant</Typography>
+          <Typography variant="h6">SpendWise Voice Assistant</Typography>
           <IconButton onClick={handleClose} size="small">
             <CloseIcon />
           </IconButton>
@@ -118,23 +198,42 @@ const ChatBot = () => {
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ p: 2, gap: 1 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Type your message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            size="small"
-          />
-          <IconButton onClick={handleSend} color="primary">
-            <SendIcon />
+        <DialogActions sx={{ p: 2, justifyContent: 'center' }}>
+          <IconButton
+            onClick={isListening ? handleStopListening : handleStartListening}
+            color={isListening ? 'error' : 'primary'}
+            disabled={isLoading}
+            sx={{
+              width: 56,
+              height: 56,
+              border: '2px solid',
+              borderColor: isListening ? 'error.main' : 'primary.main',
+              position: 'relative',
+            }}
+          >
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : isListening ? (
+              <MicOffIcon />
+            ) : (
+              <MicIcon />
+            )}
           </IconButton>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={() => setError(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
-export default ChatBot; 
+export default VoiceAssistant; 

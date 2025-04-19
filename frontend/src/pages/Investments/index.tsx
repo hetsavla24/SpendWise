@@ -15,6 +15,8 @@ import {
   CardContent,
   IconButton,
   useTheme,
+  LinearProgress,
+  InputAdornment,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -155,133 +157,277 @@ const InvestmentsPage = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
-        <Typography variant="h4" fontWeight="bold" color="text.primary">
-          Investment Portfolio
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        mb: 4,
+        background: 'linear-gradient(135deg, rgba(71, 118, 230, 0.1) 0%, rgba(142, 84, 233, 0.1) 100%)',
+        borderRadius: '16px',
+        p: 3,
+      }}>
+        <Typography variant="h4" fontWeight="bold" sx={{
+          background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+        }}>
+          Investments
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
+          sx={{
+            background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 20px -6px rgba(142, 84, 233, 0.4)',
+            }
+          }}
         >
           Add Investment
         </Button>
       </Box>
 
-      {/* Portfolio Summary */}
+      {/* Investment Overview */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={4}>
-          <InvestmentCard>
+        <Grid item xs={12} md={6}>
+          <Card sx={{
+            background: 'linear-gradient(135deg, rgba(71, 118, 230, 0.05) 0%, rgba(142, 84, 233, 0.05) 100%)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            transition: 'transform 0.2s',
+            height: '100%',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+            }
+          }}>
             <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                Total Investment
+              <Typography variant="h6" gutterBottom sx={{ color: 'text.secondary' }}>
+                Total Portfolio Value
               </Typography>
-              <Typography variant="h4" component="div" color="text.primary">
-                ${getTotalInvestment().toLocaleString()}
-              </Typography>
-            </CardContent>
-          </InvestmentCard>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <InvestmentCard>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                Current Value
-              </Typography>
-              <Typography variant="h4" component="div" color={theme.palette.primary.main}>
+              <Typography variant="h3" gutterBottom sx={{
+                background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                fontWeight: 'bold'
+              }}>
                 ${getCurrentValue().toLocaleString()}
               </Typography>
+              <Box sx={{ mt: 2 }}>
+                <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
+                  <Box sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    flex: '1 1 auto',
+                    minWidth: '120px',
+                  }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                      Total Return
+                    </Typography>
+                    <Typography variant="h6" sx={{
+                      color: getTotalReturn() >= 0 ? '#00C853' : '#FF1744',
+                      fontWeight: 'bold'
+                    }}>
+                      {getTotalReturn() >= 0 ? '+' : ''}{getTotalReturn().toLocaleString()}%
+                    </Typography>
+                  </Box>
+                  <Box sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    flex: '1 1 auto',
+                    minWidth: '120px',
+                  }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                      Total Investments
+                    </Typography>
+                    <Typography variant="h6" sx={{
+                      background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      color: 'transparent',
+                      fontWeight: 'bold'
+                    }}>
+                      {investments.length}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
             </CardContent>
-          </InvestmentCard>
+          </Card>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <InvestmentCard>
+        <Grid item xs={12} md={6}>
+          <Card sx={{
+            background: 'linear-gradient(135deg, rgba(71, 118, 230, 0.05) 0%, rgba(142, 84, 233, 0.05) 100%)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            transition: 'transform 0.2s',
+            height: '100%',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+            }
+          }}>
             <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                Total Return
+              <Typography variant="h6" gutterBottom sx={{ color: 'text.secondary' }}>
+                Portfolio Distribution
               </Typography>
-              <Typography
-                variant="h4"
-                component="div"
-                color={getTotalReturn() >= 0 ? theme.palette.success.main : theme.palette.error.main}
-              >
-                {getTotalReturn().toFixed(2)}%
-              </Typography>
+              {/* Add your pie chart or distribution visualization here */}
+              <Box sx={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                  Portfolio distribution chart will be displayed here
+                </Typography>
+              </Box>
             </CardContent>
-          </InvestmentCard>
+          </Card>
         </Grid>
       </Grid>
 
-      {/* Investments List */}
+      {/* Investment List */}
+      <Typography variant="h6" sx={{ 
+        mb: 2,
+        background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+        backgroundClip: 'text',
+        WebkitBackgroundClip: 'text',
+        color: 'transparent',
+        fontWeight: 'bold'
+      }}>
+        Your Investments
+      </Typography>
       <Grid container spacing={3}>
         {investments.map((investment) => (
-          <Grid item xs={12} md={6} key={investment.id}>
-            <Paper sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Box>
-                  <Typography variant="h6" color="text.primary">
-                    {investment.name}
+          <Grid item xs={12} md={6} lg={4} key={investment.id}>
+            <Card sx={{
+              background: 'linear-gradient(135deg, rgba(71, 118, 230, 0.05) 0%, rgba(142, 84, 233, 0.05) 100%)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: '0 8px 20px -6px rgba(142, 84, 233, 0.2)',
+              }
+            }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ 
+                      fontWeight: 'bold',
+                      background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      color: 'transparent',
+                    }}>
+                      {investment.name}
+                    </Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                      ${investment.amount.toLocaleString()}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => handleOpenDialog(investment)}
+                      sx={{
+                        background: 'rgba(71, 118, 230, 0.1)',
+                        mr: 1,
+                        '&:hover': {
+                          background: 'rgba(71, 118, 230, 0.2)',
+                        }
+                      }}
+                    >
+                      <EditIcon sx={{ color: '#4776E6' }} />
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
+                      color="error"
+                      sx={{
+                        background: 'rgba(244, 67, 54, 0.1)',
+                        '&:hover': {
+                          background: 'rgba(244, 67, 54, 0.2)',
+                        }
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                    Type: {investment.type}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {investment.type}
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                    Last Updated: {new Date(investment.lastUpdated).toLocaleDateString()}
+                  </Typography>
+                  <Typography variant="body2" sx={{ 
+                    color: investment.returnRate >= 0 ? '#00C853' : '#FF1744',
+                    fontWeight: 500
+                  }}>
+                    Return: {investment.returnRate >= 0 ? '+' : ''}{investment.returnRate}%
                   </Typography>
                 </Box>
-                <Box>
-                  <IconButton size="small" onClick={() => handleOpenDialog(investment)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton size="small" onClick={() => handleDelete(investment.id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                <Box sx={{ 
+                  p: 2, 
+                  borderRadius: 2,
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
+                    Performance
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={Math.min(Math.max((investment.returnRate + 100) / 2, 0), 100)}
+                    sx={{
+                      height: 10,
+                      borderRadius: 5,
+                      bgcolor: 'rgba(142, 84, 233, 0.1)',
+                      '& .MuiLinearProgress-bar': {
+                        background: investment.returnRate >= 0
+                          ? 'linear-gradient(135deg, #00C853 0%, #69F0AE 100%)'
+                          : 'linear-gradient(135deg, #FF5252 0%, #FF1744 100%)',
+                        borderRadius: 5,
+                      },
+                    }}
+                  />
                 </Box>
-              </Box>
-
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Invested Amount
-                  </Typography>
-                  <Typography variant="body1">
-                    ${investment.amount.toLocaleString()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Current Value
-                  </Typography>
-                  <Typography variant="body1">
-                    ${investment.currentValue.toLocaleString()}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Return Rate
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    color={investment.returnRate >= 0 ? theme.palette.success.main : theme.palette.error.main}
-                  >
-                    {investment.returnRate}%
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Last Updated
-                  </Typography>
-                  <Typography variant="body1">
-                    {new Date(investment.lastUpdated).toLocaleDateString()}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Paper>
+              </CardContent>
+            </Card>
           </Grid>
         ))}
       </Grid>
 
       {/* Add/Edit Investment Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {selectedInvestment ? 'Edit Investment' : 'Add New Investment'}
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: 'linear-gradient(135deg, rgba(71, 118, 230, 0.05) 0%, rgba(142, 84, 233, 0.05) 100%)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+          fontWeight: 'bold'
+        }}>
+          {selectedInvestment ? 'Edit Investment' : 'Add Investment'}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
@@ -289,19 +435,17 @@ const InvestmentsPage = () => {
               label="Investment Name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: '#4776E6',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#8E54E9',
+                  },
+                },
+              }}
             />
-            <TextField
-              select
-              label="Investment Type"
-              value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-            >
-              {investmentTypes.map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </TextField>
             <TextField
               label="Investment Amount"
               type="number"
@@ -310,12 +454,65 @@ const InvestmentsPage = () => {
               InputProps={{
                 startAdornment: <Typography>$</Typography>,
               }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: '#4776E6',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#8E54E9',
+                  },
+                },
+              }}
             />
+            <TextField
+              label="Investment Type"
+              value={formData.type}
+              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              select
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: '#4776E6',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#8E54E9',
+                  },
+                },
+              }}
+            >
+              {investmentTypes.map((type) => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button 
+            onClick={handleCloseDialog}
+            sx={{
+              color: 'text.secondary',
+              '&:hover': {
+                background: 'rgba(142, 84, 233, 0.1)',
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={handleSubmit}
+            sx={{
+              background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 4px 12px rgba(142, 84, 233, 0.3)',
+              }
+            }}
+          >
             {selectedInvestment ? 'Save' : 'Add'}
           </Button>
         </DialogActions>
