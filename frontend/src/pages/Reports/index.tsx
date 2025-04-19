@@ -35,6 +35,9 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
+  BarChart,
+  Bar,
 } from 'recharts';
 
 const StatsCard = styled(Card)(({ theme }) => ({
@@ -61,7 +64,7 @@ const ReportsPage = () => {
   const [timeRange, setTimeRange] = useState('month');
   const [loading, setLoading] = useState(false);
 
-  // Mock data - will be replaced with actual data from Django backend
+  // Enhanced mock data
   const stats = {
     totalIncome: 5200,
     totalExpenses: 3800,
@@ -80,6 +83,16 @@ const ReportsPage = () => {
       { month: 'Mar', income: 5200, expenses: 3800 },
       { month: 'Apr', income: 5100, expenses: 3700 },
       { month: 'May', income: 5300, expenses: 3900 },
+    ],
+    categorySpending: [
+      { category: 'Housing', amount: 1500, percentage: 25, color: '#0088FE' },
+      { category: 'Food', amount: 800, percentage: 20, color: '#00C49F' },
+      { category: 'Transportation', amount: 400, percentage: 15, color: '#FFBB28' },
+      { category: 'Entertainment', amount: 300, percentage: 12, color: '#FF8042' },
+      { category: 'Utilities', amount: 300, percentage: 10, color: '#8884d8' },
+      { category: 'Shopping', amount: 250, percentage: 8, color: '#82ca9d' },
+      { category: 'Healthcare', amount: 200, percentage: 6, color: '#ffc658' },
+      { category: 'Others', amount: 150, percentage: 4, color: '#a4de6c' },
     ],
   };
 
@@ -219,9 +232,11 @@ const ReportsPage = () => {
                 <XAxis dataKey="month" />
                 <YAxis />
                 <RechartsTooltip />
+                <Legend />
                 <Area
                   type="monotone"
                   dataKey="income"
+                  name="Income"
                   stackId="1"
                   stroke="#4776E6"
                   fill="#4776E6"
@@ -230,6 +245,7 @@ const ReportsPage = () => {
                 <Area
                   type="monotone"
                   dataKey="expenses"
+                  name="Expenses"
                   stackId="2"
                   stroke="#FF8042"
                   fill="#FF8042"
@@ -245,47 +261,95 @@ const ReportsPage = () => {
             <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
-                  data={stats.topCategories}
+                  data={stats.categorySpending}
                   dataKey="amount"
-                  nameKey="name"
+                  nameKey="category"
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
                   label
                 >
-                  {stats.topCategories.map((entry, index) => (
+                  {stats.categorySpending.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <RechartsTooltip />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
-            <Divider sx={{ my: 2 }} />
-            <Stack spacing={1}>
-              {stats.topCategories.map((category, index) => (
-                <Stack
-                  key={category.name}
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Stack direction="row" spacing={1} alignItems="center">
+          </Card>
+        </Grid>
+
+        {/* Spending by Category Section */}
+        <Grid item xs={12}>
+          <Card sx={{ p: 2 }}>
+            <Typography variant="h6" sx={{ mb: 3 }}>Spending by Category</Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={stats.categorySpending}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="category" />
+                    <YAxis />
+                    <RechartsTooltip />
+                    <Bar dataKey="amount" fill="#8884d8">
+                      {stats.categorySpending.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                  {stats.categorySpending.map((category) => (
                     <Box
+                      key={category.category}
                       sx={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: '50%',
-                        bgcolor: category.color,
+                        mb: 2,
+                        p: 2,
+                        borderRadius: 1,
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 0 10px rgba(0,0,0,0.05)',
                       }}
-                    />
-                    <Typography variant="body2">{category.name}</Typography>
-                  </Stack>
-                  <Typography variant="body2" fontWeight="medium">
-                    ${category.amount}
-                  </Typography>
-                </Stack>
-              ))}
-            </Stack>
+                    >
+                      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Box
+                            sx={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: '50%',
+                              bgcolor: category.color,
+                            }}
+                          />
+                          <Typography variant="subtitle2">{category.category}</Typography>
+                        </Stack>
+                        <Typography variant="subtitle2" fontWeight="bold">
+                          ${category.amount}
+                        </Typography>
+                      </Stack>
+                      <Box sx={{ mt: 1, position: 'relative', height: 6, bgcolor: 'grey.100', borderRadius: 3 }}>
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            height: '100%',
+                            width: `${category.percentage}%`,
+                            bgcolor: category.color,
+                            borderRadius: 3,
+                          }}
+                        />
+                      </Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                        {category.percentage}% of total expenses
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Grid>
+            </Grid>
           </Card>
         </Grid>
       </Grid>

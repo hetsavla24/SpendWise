@@ -15,6 +15,12 @@ import {
   MenuItem,
   Button,
   TextField,
+  Badge,
+  Popover,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
 } from '@mui/material';
 import {
   AreaChart,
@@ -34,6 +40,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format, subMonths } from 'date-fns';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 // Define TypeScript interfaces
 interface DashboardData {
@@ -316,7 +326,7 @@ const Dashboard = () => {
       flexDirection: 'column', 
       gap: 3,
       background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
-      position: 'relative', // Add this for absolute positioning of the voice button
+      position: 'relative',
     }}>
       {/* Date Range Selector */}
       <Card sx={{ 
@@ -386,33 +396,34 @@ const Dashboard = () => {
           </Typography>
         </Stack>
 
-        {/* Voice Assistant Button - Moved here */}
-        <Button
-          variant="contained"
-          onClick={handleVoiceAssistant}
-          startIcon={<Typography component="span">{isSpeaking ? "🔇" : "🔊"}</Typography>}
-          sx={{
-            background: isSpeaking 
-              ? 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)'
-              : 'linear-gradient(135deg, #7F00FF 0%, #E100FF 100%)',
-            color: 'white',
-            '&:hover': {
-              background: isSpeaking
-                ? 'linear-gradient(135deg, #FF4B2B 0%, #FF416C 100%)'
-                : 'linear-gradient(135deg, #E100FF 0%, #7F00FF 100%)',
-            },
-            fontWeight: 600,
-            borderRadius: 2,
-            textTransform: 'none',
-            px: 3,
-            py: 1,
-            minWidth: '150px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-            ml: 2, // Add margin to separate from date range
-          }}
-        >
-          {isSpeaking ? 'Stop Reading' : 'Start Reading'}
-        </Button>
+        <Stack direction="row" spacing={2}>
+          {/* Voice Assistant Button */}
+          <Button
+            variant="contained"
+            onClick={handleVoiceAssistant}
+            startIcon={<Typography component="span">{isSpeaking ? "🔇" : "🔊"}</Typography>}
+            sx={{
+              background: isSpeaking 
+                ? 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)'
+                : 'linear-gradient(135deg, #7F00FF 0%, #E100FF 100%)',
+              color: 'white',
+              '&:hover': {
+                background: isSpeaking
+                  ? 'linear-gradient(135deg, #FF4B2B 0%, #FF416C 100%)'
+                  : 'linear-gradient(135deg, #E100FF 0%, #7F00FF 100%)',
+              },
+              fontWeight: 600,
+              borderRadius: 2,
+              textTransform: 'none',
+              px: 3,
+              py: 1,
+              minWidth: '150px',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+            }}
+          >
+            {isSpeaking ? 'Stop Reading' : 'Start Reading'}
+          </Button>
+        </Stack>
       </Card>
 
       {/* Financial Summary Cards */}
@@ -673,54 +684,6 @@ const Dashboard = () => {
                       fill="url(#colorExpenses)" 
                     />
                   </AreaChart>
-                </ResponsiveContainer>
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* Category Analysis */}
-          <Card sx={{ 
-            flex: 2,
-            background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)',
-            boxShadow: '0 8px 32px rgba(77, 101, 217, 0.1)',
-            borderRadius: 3,
-            border: '1px solid rgba(255, 255, 255, 0.8)',
-          }}>
-            <CardContent sx={{ height: '100%', p: 3 }}>
-              <Typography variant="h6" sx={{ 
-                mb: 2,
-                fontWeight: 600,
-                background: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>
-                Spending by Category
-              </Typography>
-              <Box sx={{ height: 'calc(100% - 40px)' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={dashboardData.category_analysis}
-                      dataKey="Debit"
-                      nameKey="Transaction_Category"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label
-                    >
-                      {dashboardData.category_analysis.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{
-                        background: 'rgba(255,255,255,0.9)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                      }}
-                    />
-                  </PieChart>
                 </ResponsiveContainer>
               </Box>
             </CardContent>
