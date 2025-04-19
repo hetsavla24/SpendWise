@@ -23,7 +23,7 @@ const VoiceAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chatHistory, setChatHistory] = useState([
-    { type: 'bot', text: 'Hi! I\'m your SpendWise voice assistant. Click the microphone to start talking!' },
+    { type: 'bot', text: 'Hi! YASH I\'m your SpendWise voice assistant. Click the microphone to start talking!' },
   ]);
 
   // Poll for voice assistant status when listening

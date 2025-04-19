@@ -25,53 +25,73 @@ declare global {
 
 const VoiceAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [script, setScript] = useState<HTMLScriptElement | null>(null);
 
-  useEffect(() => {
-    // Configuration for Vapi AI
-    const assistant = "2bb33599-178f-4be1-96bf-afd74aa0e0e0";
-    const apiKey = "969d188d-61d3-4284-a13b-9c2ec4cc3294";
-    const buttonConfig = {};
-
-    // Create and append the script
-    const script = document.createElement('script');
-    script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-    script.defer = true;
-    script.async = true;
-
-    script.onload = () => {
-      if (window.vapiSDK) {
-        window.vapiInstance = window.vapiSDK.run({
-          apiKey: apiKey,
-          assistant: assistant,
-          config: buttonConfig,
-        });
-      }
-    };
-
-    document.body.appendChild(script);
-
-    // Cleanup
-    return () => {
-      if (window.vapiInstance) {
-        window.vapiInstance.destroy();
-      }
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
+  const cleanupVapi = () => {
     if (window.vapiInstance) {
-      if (isOpen) {
-        window.vapiInstance.destroy();
-      } else {
-        window.vapiInstance.open();
-      }
+      window.vapiInstance.destroy();
+      window.vapiInstance = null;
+    }
+    if (script && document.body.contains(script)) {
+      document.body.removeChild(script);
+      setScript(null);
     }
   };
 
+  useEffect(() => {
+    return () => {
+      cleanupVapi();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Configuration for Vapi AI
+      const assistant = "2bb33599-178f-4be1-96bf-afd74aa0e0e0";
+      const apiKey = "969d188d-61d3-4284-a13b-9c2ec4cc3294";
+      const buttonConfig = {};
+
+      // Create and append the script
+      const newScript = document.createElement('script');
+      newScript.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+      newScript.defer = true;
+      newScript.async = true;
+
+      newScript.onload = () => {
+        if (window.vapiSDK) {
+          window.vapiInstance = window.vapiSDK.run({
+            apiKey: apiKey,
+            assistant: assistant,
+            config: buttonConfig,
+          });
+        }
+      };
+
+      document.body.appendChild(newScript);
+      setScript(newScript);
+    } else {
+      cleanupVapi();
+    }
+  }, [isOpen]);
+
+  const handleToggle = (event: React.MouseEvent) => {
+    event.preventDefault(); // Prevent default navigation
+    event.stopPropagation(); // Stop event propagation
+    
+    if (isOpen) {
+      cleanupVapi();
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <StyledFab aria-label="voice assistant" onClick={handleToggle}>
+    <StyledFab 
+      aria-label="voice assistant" 
+      onClick={handleToggle}
+      sx={{
+        zIndex: 9999 // Ensure button stays on top
+      }}
+    >
       {isOpen ? <CloseIcon /> : <MicIcon />}
     </StyledFab>
   );

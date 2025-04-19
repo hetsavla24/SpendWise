@@ -58,7 +58,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           zIndex: (theme) => theme.zIndex.drawer + 1,
           height: 'auto',
           p: 1,
-          mb: 4
         }}
       >
         <Toolbar sx={{ 
@@ -68,7 +67,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           mx: 2,
           my: 0.5,
           borderRadius: 2,
-          mb: 4
         }}>
           <Box sx={{ 
             display: 'flex',
@@ -201,6 +199,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: 3,
+          pt: 10,
           width: `calc(100% - ${drawerWidth}px)`,
           minHeight: '100vh',
           backgroundColor: darkMode ? 'background.default' : 'grey.50',

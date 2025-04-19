@@ -251,7 +251,7 @@ const Dashboard = () => {
 
       // Welcome and summary
       const summaryText = `
-        Welcome to your SpendWise dashboard.
+        Hello YASH Welcome to your SpendWise dashboard.
         Your current balance is ${formatCurrency(dashboardData.summary.current_balance)}.
         This month, you earned ${formatCurrency(dashboardData.summary.total_credit)}
         and spent ${formatCurrency(dashboardData.summary.total_debit)}.
@@ -288,14 +288,35 @@ const Dashboard = () => {
     }
   };
 
+  // Add handlers for date changes
+  const handleStartDateChange = (newValue: Date | null) => {
+    if (newValue) {
+      setStartDate(newValue);
+      // If end date is before new start date, update end date
+      if (endDate < newValue) {
+        setEndDate(newValue);
+      }
+    }
+  };
+
+  const handleEndDateChange = (newValue: Date | null) => {
+    if (newValue) {
+      // If new end date is after start date, update it
+      if (newValue >= startDate) {
+        setEndDate(newValue);
+      }
+    }
+  };
+
   return (
     <Box sx={{ 
       p: 2, 
       height: 'calc(100vh - 64px)', 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: 2,
+      gap: 3,
       background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
+      position: 'relative', // Add this for absolute positioning of the voice button
     }}>
       {/* Date Range Selector */}
       <Card sx={{ 
@@ -304,13 +325,17 @@ const Dashboard = () => {
         boxShadow: '0 8px 32px rgba(77, 101, 217, 0.1)',
         borderRadius: 3,
         border: '1px solid rgba(255, 255, 255, 0.8)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
       }}>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ flex: 1 }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Start Date"
               value={startDate}
-              onChange={(newValue) => newValue && setStartDate(newValue)}
+              onChange={handleStartDateChange}
+              maxDate={endDate}
               slotProps={{
                 textField: {
                   variant: "outlined",
@@ -327,8 +352,9 @@ const Dashboard = () => {
             <DatePicker
               label="End Date"
               value={endDate}
-              onChange={(newValue) => newValue && setEndDate(newValue)}
+              onChange={handleEndDateChange}
               minDate={startDate}
+              maxDate={new Date()}
               slotProps={{
                 textField: {
                   variant: "outlined",
@@ -352,15 +378,15 @@ const Dashboard = () => {
               py: 1,
               borderRadius: 2,
               fontWeight: 500,
+              flexGrow: 1,
+              textAlign: 'center',
             }}
           >
             Showing data from {format(startDate, 'MMM d, yyyy')} to {format(endDate, 'MMM d, yyyy')}
           </Typography>
         </Stack>
-      </Card>
 
-      {/* Voice Assistant Button */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        {/* Voice Assistant Button - Moved here */}
         <Button
           variant="contained"
           onClick={handleVoiceAssistant}
@@ -382,11 +408,12 @@ const Dashboard = () => {
             py: 1,
             minWidth: '150px',
             boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+            ml: 2, // Add margin to separate from date range
           }}
         >
           {isSpeaking ? 'Stop Reading' : 'Start Reading'}
         </Button>
-      </Box>
+      </Card>
 
       {/* Financial Summary Cards */}
       <Grid container spacing={3}>
