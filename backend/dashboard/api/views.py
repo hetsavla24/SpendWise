@@ -60,10 +60,12 @@ class DashboardAnalyticsView(APIView):
             recent_transactions = df.sort_values('Transaction_Date', ascending=False).head(5)
             recent_transactions_list = []
             for _, row in recent_transactions.iterrows():
+                # Get recipient name, fallback to Transaction_Type if Recipient_Name is empty
+                recipient = row['Recipient_Name'] if pd.notna(row['Recipient_Name']) and row['Recipient_Name'].strip() else row['Transaction_Type']
                 recent_transactions_list.append({
                     'transaction_id': str(row.name),
                     'transaction_date': row['Transaction_Date'].strftime('%Y-%m-%d'),
-                    'recipient_name': row['Transaction_Type'],
+                    'recipient_name': recipient,
                     'debit': float(row['Debit']),
                     'credit': float(row['Credit'])
                 })
