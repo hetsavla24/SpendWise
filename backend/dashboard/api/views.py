@@ -9,6 +9,10 @@ from vapi_python import Vapi
 import os
 import json
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -49,60 +53,54 @@ class DashboardAnalyticsView(APIView):
                     'total_debit': float(row['Debit'])
                 })
 
-            # Category analysis (using Transaction_Type instead)
+            # Category analysis
             category_analysis = df.groupby('Transaction_Type')['Debit'].sum().reset_index()
-            category_analysis = category_analysis.sort_values('Debit', ascending=False)
-            category_data = category_analysis.head(5).to_dict('records')
-
-            # Recent transactions (last 10)
-            recent_transactions = []
-            recent_df = df.sort_values('Transaction_Date', ascending=False).head(10)
-            for _, row in recent_df.iterrows():
-                recent_transactions.append({
-                    'transaction_id': str(row['Transaction_ID']),
+            
+            # Get recent transactions
+            recent_transactions = df.sort_values('Transaction_Date', ascending=False).head(5)
+            recent_transactions_list = []
+            for _, row in recent_transactions.iterrows():
+                recent_transactions_list.append({
+                    'transaction_id': str(row.name),
                     'transaction_date': row['Transaction_Date'].strftime('%Y-%m-%d'),
-                    'recipient_name': row['Recipient_Name'],
+                    'recipient_name': row['Transaction_Type'],
                     'debit': float(row['Debit']),
                     'credit': float(row['Credit'])
                 })
 
-            # Calculate savings goal based on filtered data
-            monthly_savings = []
-            for _, group in df.groupby(df['Transaction_Date'].dt.strftime('%Y-%m')):
-                savings = group['Credit'].sum() - group['Debit'].sum()
-                if savings > 0:
-                    monthly_savings.append(savings)
-
-            avg_monthly_savings = sum(monthly_savings) / len(monthly_savings) if monthly_savings else 0
-            target_savings = avg_monthly_savings * 12  # Annual target
-            current_savings = current_balance
-            progress = min(100, (current_savings / target_savings * 100)) if target_savings > 0 else 0
+            # Calculate savings goal
+            total_savings = total_credit - total_debit
+            savings_target = 10000  # This could be made dynamic based on user preferences
+            savings_progress = (total_savings / savings_target * 100) if savings_target > 0 else 0
 
             response_data = {
                 'summary': {
                     'total_transactions': total_transactions,
                     'total_credit': float(total_credit),
                     'total_debit': float(total_debit),
-                    'current_balance': float(current_balance),
+                    'current_balance': float(current_balance)
                 },
                 'monthly_analysis': monthly_analysis,
-                'category_analysis': category_data,
-                'recent_transactions': recent_transactions,
+                'category_analysis': category_analysis.to_dict('records'),
+                'recent_transactions': recent_transactions_list,
                 'savings_goal': {
-                    'current': float(current_savings),
-                    'target': float(target_savings),
-                    'progress': float(progress)
+                    'current': float(total_savings),
+                    'target': float(savings_target),
+                    'progress': float(savings_progress)
                 }
             }
 
             return Response(response_data)
         except Exception as e:
-            print(f"Error: {str(e)}")  # Add this line for debugging
-            return Response({'error': str(e)}, status=500)
+            logger.error(f"Error in dashboard analytics: {str(e)}", exc_info=True)
+            return Response({
+                'error': 'Failed to fetch dashboard analytics',
+                'detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Voice Assistant Configuration
-VAPI_API_KEY = "969d188d-61d3-4284-a13b-9c2ec4cc3294"
-VAPI_ASSISTANT_ID = "2bb33599-178f-4be1-96bf-afd74aa0e0e0"
+VAPI_API_KEY = os.getenv('VAPI_API_KEY')
+VAPI_ASSISTANT_ID = os.getenv('VAPI_ASSISTANT_ID')
 
 vapi_instance = None
 
@@ -111,6 +109,9 @@ def start_voice_assistant(request):
     global vapi_instance
     try:
         logger.info("Starting voice assistant...")
+        
+        if not VAPI_API_KEY or not VAPI_ASSISTANT_ID:
+            raise ValueError("Voice assistant configuration is missing")
         
         # Reset the instance if it exists to ensure a fresh start
         if vapi_instance:
@@ -151,7 +152,7 @@ def start_voice_assistant(request):
         logger.error(f"Error starting voice assistant: {str(e)}", exc_info=True)
         return Response({
             'error': str(e),
-            'detail': 'Failed to start voice assistant. Please check the API key and assistant ID.'
+            'detail': 'Failed to start voice assistant. Please check the configuration.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])

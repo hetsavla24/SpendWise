@@ -45,11 +45,16 @@ const VoiceAssistant = () => {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && import.meta.env.VITE_ENABLE_VOICE_ASSISTANT === 'true') {
       // Configuration for Vapi AI
-      const assistant = "2bb33599-178f-4be1-96bf-afd74aa0e0e0";
-      const apiKey = "969d188d-61d3-4284-a13b-9c2ec4cc3294";
+      const assistant = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+      const apiKey = import.meta.env.VITE_VAPI_API_KEY;
       const buttonConfig = {};
+
+      if (!assistant || !apiKey) {
+        console.error('Voice assistant configuration is missing');
+        return;
+      }
 
       // Create and append the script
       const newScript = document.createElement('script');
@@ -74,23 +79,16 @@ const VoiceAssistant = () => {
     }
   }, [isOpen]);
 
-  const handleToggle = (event: React.MouseEvent) => {
-    event.preventDefault(); // Prevent default navigation
-    event.stopPropagation(); // Stop event propagation
-    
-    if (isOpen) {
-      cleanupVapi();
-    }
-    setIsOpen(!isOpen);
-  };
+  // Only render if voice assistant is enabled
+  if (import.meta.env.VITE_ENABLE_VOICE_ASSISTANT !== 'true') {
+    return null;
+  }
 
   return (
-    <StyledFab 
-      aria-label="voice assistant" 
-      onClick={handleToggle}
-      sx={{
-        zIndex: 9999 // Ensure button stays on top
-      }}
+    <StyledFab
+      color="primary"
+      onClick={() => setIsOpen(!isOpen)}
+      aria-label="voice assistant"
     >
       {isOpen ? <CloseIcon /> : <MicIcon />}
     </StyledFab>

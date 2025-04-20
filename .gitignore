@@ -1,6 +1,92 @@
-backend/spendV
-__pycache__
-ML/.env
+# Environment files - anywhere in the project
+.env
+.env.*
+!.env.example
+*/.env
+*/.env.*
+!*/.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+*.so
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+static/
+local_settings.py
+backend/spendV/
+
+# Frontend
+node_modules/
+dist/
+build/
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.vs/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+*.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+.directory
+
+# Temporary files
+*.bak
+*.tmp
+*.temp
+.cache/
+*.pid
+*.seed
+*.pid.lock
+
+# ML specific
+models/
+data/
+cache/
+*.h5
+*.pkl
+*.model
+checkpoints/
+runs/
+logs/
+tensorboard/
+
 0104@8122
 frontend/node_modules
 frontend/build
