@@ -478,7 +478,7 @@ const Dashboard = () => {
           </Card>
         </Grid>
 
-        {/* Monthly Income */}
+        {/* Average Monthly Income */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
             p: 3, 
@@ -499,7 +499,7 @@ const Dashboard = () => {
                 fontWeight: 600,
                 letterSpacing: '0.5px',
               }}>
-                {t('monthly_income')}
+                Avg Monthly Income
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
@@ -507,7 +507,10 @@ const Dashboard = () => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>
-                {formatCurrency(dashboardData.summary.total_credit)}
+                {formatCurrency(
+                  dashboardData.monthly_analysis.reduce((sum, month) => sum + month.total_credit, 0) / 
+                  dashboardData.monthly_analysis.length || 1
+                )}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="caption" sx={{ 
@@ -518,14 +521,14 @@ const Dashboard = () => {
                   borderRadius: 2,
                   fontWeight: 600,
                 }}>
-                  +5.3%
+                  Monthly Avg
                 </Typography>
               </Box>
             </Stack>
           </Card>
         </Grid>
 
-        {/* Monthly Expenses */}
+        {/* Average Monthly Expenses */}
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
             p: 3, 
@@ -546,7 +549,7 @@ const Dashboard = () => {
                 fontWeight: 600,
                 letterSpacing: '0.5px',
               }}>
-                {t('monthly_expenses')}
+                Avg Monthly Expenses
               </Typography>
               <Typography variant="h4" sx={{ 
                 fontWeight: 700,
@@ -554,7 +557,10 @@ const Dashboard = () => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>
-                {formatCurrency(dashboardData.summary.total_debit)}
+                {formatCurrency(
+                  dashboardData.monthly_analysis.reduce((sum, month) => sum + month.total_debit, 0) / 
+                  dashboardData.monthly_analysis.length || 1
+                )}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="caption" sx={{ 
@@ -565,7 +571,7 @@ const Dashboard = () => {
                   borderRadius: 2,
                   fontWeight: 600,
                 }}>
-                  +7.5%
+                  Monthly Avg
                 </Typography>
               </Box>
             </Stack>
@@ -618,12 +624,111 @@ const Dashboard = () => {
             </Stack>
           </Card>
         </Grid>
+
+        {/* Total Income and Expenses Row - Full Width */}
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            {/* Total Income (Lifetime) */}
+            <Grid item xs={12} sm={6}>
+              <Card sx={{ 
+                p: 3, 
+                height: '100%',
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8fff9 100%)',
+                boxShadow: '0 8px 32px rgba(74, 222, 128, 0.1)',
+                borderRadius: 3,
+                border: '1px solid rgba(255, 255, 255, 0.8)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': { 
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 40px rgba(74, 222, 128, 0.12)',
+                }
+              }}>
+                <Stack spacing={1}>
+                  <Typography variant="subtitle2" sx={{ 
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                    letterSpacing: '0.5px',
+                  }}>
+                    Total Income
+                  </Typography>
+                  <Typography variant="h4" sx={{ 
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}>
+                    {formatCurrency(dashboardData.summary.total_credit)}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="caption" sx={{ 
+                      color: '#4ADE80',
+                      bgcolor: 'rgba(74, 222, 128, 0.1)',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 2,
+                      fontWeight: 600,
+                    }}>
+                      Lifetime
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Card>
+            </Grid>
+
+            {/* Total Expenses (Lifetime) */}
+            <Grid item xs={12} sm={6}>
+              <Card sx={{ 
+                p: 3, 
+                height: '100%',
+                background: 'linear-gradient(135deg, #ffffff 0%, #fff8f8 100%)',
+                boxShadow: '0 8px 32px rgba(255, 107, 107, 0.1)',
+                borderRadius: 3,
+                border: '1px solid rgba(255, 255, 255, 0.8)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': { 
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 40px rgba(255, 107, 107, 0.12)',
+                }
+              }}>
+                <Stack spacing={1}>
+                  <Typography variant="subtitle2" sx={{ 
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                    letterSpacing: '0.5px',
+                  }}>
+                    Total Expenses
+                  </Typography>
+                  <Typography variant="h4" sx={{ 
+                    fontWeight: 700,
+                    background: 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}>
+                    {formatCurrency(dashboardData.summary.total_debit)}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="caption" sx={{ 
+                      color: '#F75555',
+                      bgcolor: 'rgba(247, 85, 85, 0.1)',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 2,
+                      fontWeight: 600,
+                    }}>
+                      Lifetime
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
 
       {/* Main Content Area */}
       <Box sx={{ display: 'flex', gap: 2, flex: 1, overflow: 'hidden' }}>
         {/* Left Side - Charts */}
-        <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ flex: 1.5, display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Income vs Expenses Chart */}
           <Card sx={{ 
             flex: 3,
@@ -694,11 +799,12 @@ const Dashboard = () => {
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Recent Transactions */}
           <Card sx={{ 
-            flex: 3,
+            flex: 2,
             background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)',
             boxShadow: '0 8px 32px rgba(77, 101, 217, 0.1)',
             borderRadius: 3,
             border: '1px solid rgba(255, 255, 255, 0.8)',
+            minHeight: '400px',  // Added minimum height
           }}>
             <CardContent sx={{ height: '100%', p: 3 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -794,7 +900,7 @@ const Dashboard = () => {
 
           {/* Savings Goal */}
           <Card sx={{ 
-            flex: 2,
+            flex: 1,
             background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)',
             boxShadow: '0 8px 32px rgba(77, 101, 217, 0.1)',
             borderRadius: 3,
