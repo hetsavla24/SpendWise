@@ -189,7 +189,7 @@ const GoalsPage = () => {
   const handleDelete = async (id: number) => {
     try {
       // This will be replaced with actual API call to Django backend
-      // await fetch(`/api/goals/${id}/`, {
+      // await fetch(`/api/goals/₹{id}/`, {
       //   method: 'DELETE',
       // });
       
@@ -253,7 +253,7 @@ const GoalsPage = () => {
                       label={goal.status}
                       size="small"
                       sx={{
-                        bgcolor: `${getStatusColor(goal.status)}20`,
+                        bgcolor: `₹{getStatusColor(goal.status)}20`,
                         color: getStatusColor(goal.status),
                         mr: 1,
                       }}
@@ -273,7 +273,7 @@ const GoalsPage = () => {
                       Progress
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      ${goal.currentAmount.toLocaleString()} of ${goal.targetAmount.toLocaleString()}
+                      ₹{goal.currentAmount.toLocaleString()} of ₹{goal.targetAmount.toLocaleString()}
                     </Typography>
                   </Box>
                   <BorderLinearProgress
@@ -331,7 +331,7 @@ const GoalsPage = () => {
               value={formData.targetAmount}
               onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
               InputProps={{
-                startAdornment: <Typography>$</Typography>,
+                startAdornment: <Typography>₹</Typography>,
               }}
             />
             <TextField
@@ -340,7 +340,7 @@ const GoalsPage = () => {
               value={formData.currentAmount}
               onChange={(e) => setFormData({ ...formData, currentAmount: e.target.value })}
               InputProps={{
-                startAdornment: <Typography>$</Typography>,
+                startAdornment: <Typography>₹</Typography>,
               }}
             />
             <TextField

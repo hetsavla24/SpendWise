@@ -175,7 +175,7 @@ const ReportsPage = () => {
                 <TrendingUpIcon sx={{ color: 'success.main' }} />
               </Stack>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                ${stats.totalIncome.toLocaleString()}
+                ₹{stats.totalIncome.toLocaleString()}
               </Typography>
               <Typography variant="body2" color="success.main">
                 +8.2% from last period
@@ -193,7 +193,7 @@ const ReportsPage = () => {
                 <TrendingDownIcon sx={{ color: 'error.main' }} />
               </Stack>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                ${stats.totalExpenses.toLocaleString()}
+                ₹{stats.totalExpenses.toLocaleString()}
               </Typography>
               <Typography variant="body2" color="error.main">
                 +5.4% from last period
@@ -211,7 +211,7 @@ const ReportsPage = () => {
                 <AccountBalanceIcon sx={{ color: 'primary.main' }} />
               </Stack>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                ${stats.savings.toLocaleString()}
+                ₹{stats.savings.toLocaleString()}
               </Typography>
               <Typography variant="body2" color="primary.main">
                 {stats.savingsRate}% savings rate
@@ -270,7 +270,7 @@ const ReportsPage = () => {
                   label
                 >
                   {stats.categorySpending.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-₹{index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <RechartsTooltip />
@@ -294,7 +294,7 @@ const ReportsPage = () => {
                     <RechartsTooltip />
                     <Bar dataKey="amount" fill="#8884d8">
                       {stats.categorySpending.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
+                        <Cell key={`cell-₹{index}`} fill={entry.color} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -326,7 +326,7 @@ const ReportsPage = () => {
                           <Typography variant="subtitle2">{category.category}</Typography>
                         </Stack>
                         <Typography variant="subtitle2" fontWeight="bold">
-                          ${category.amount}
+                          ₹{category.amount}
                         </Typography>
                       </Stack>
                       <Box sx={{ mt: 1, position: 'relative', height: 6, bgcolor: 'grey.100', borderRadius: 3 }}>
@@ -336,7 +336,7 @@ const ReportsPage = () => {
                             top: 0,
                             left: 0,
                             height: '100%',
-                            width: `${category.percentage}%`,
+                            width: `₹{category.percentage}%`,
                             bgcolor: category.color,
                             borderRadius: 3,
                           }}

@@ -173,7 +173,7 @@ const BudgetPage = () => {
                   color: 'transparent',
                   fontWeight: 'bold'
                 }}>
-                  ${totalBudget.toLocaleString()}
+                  ₹{totalBudget.toLocaleString()}
                 </Typography>
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -181,13 +181,13 @@ const BudgetPage = () => {
                       color: 'text.secondary',
                       fontWeight: 500
                     }}>
-                      Spent: ${totalSpent.toLocaleString()}
+                      Spent: ₹{totalSpent.toLocaleString()}
                     </Typography>
                     <Typography variant="body2" sx={{
                       color: 'text.secondary',
                       fontWeight: 500
                     }}>
-                      Remaining: ${(totalBudget - totalSpent).toLocaleString()}
+                      Remaining: ₹{(totalBudget - totalSpent).toLocaleString()}
                     </Typography>
                   </Box>
                   <LinearProgress
@@ -260,7 +260,7 @@ const BudgetPage = () => {
                       color: 'transparent',
                       fontWeight: 'bold'
                     }}>
-                      ${(totalSpent / categories.length).toFixed(2)}
+                      ₹{(totalSpent / categories.length).toFixed(2)}
                     </Typography>
                   </Box>
                   <Box>
@@ -328,7 +328,7 @@ const BudgetPage = () => {
                       color: category.color,
                       textShadow: '0 1px 2px rgba(0,0,0,0.1)'
                     }}>
-                      ${category.spent.toLocaleString()} / ${category.budget.toLocaleString()}
+                      ₹{category.spent.toLocaleString()} / ₹{category.budget.toLocaleString()}
                     </Typography>
                   </Box>
                   <Box>
@@ -366,9 +366,9 @@ const BudgetPage = () => {
                     sx={{
                       height: 10,
                       borderRadius: 5,
-                      bgcolor: `${category.color}20`,
+                      bgcolor: `₹{category.color}20`,
                       '& .MuiLinearProgress-bar': {
-                        background: `linear-gradient(135deg, ${category.color} 0%, ${category.color}CC 100%)`,
+                        background: `linear-gradient(135deg, ₹{category.color} 0%, ₹{category.color}CC 100%)`,
                         borderRadius: 5,
                       },
                     }}
@@ -384,7 +384,7 @@ const BudgetPage = () => {
                       color: 'text.secondary',
                       fontWeight: 500
                     }}>
-                      ${(category.budget - category.spent).toLocaleString()} remaining
+                      ₹{(category.budget - category.spent).toLocaleString()} remaining
                     </Typography>
                   </Box>
                   {category.spent >= category.budget * 0.9 && (
@@ -459,7 +459,7 @@ const BudgetPage = () => {
               value={formData.budget}
               onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
               InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {

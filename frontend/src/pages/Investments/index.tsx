@@ -216,7 +216,7 @@ const InvestmentsPage = () => {
                 color: 'transparent',
                 fontWeight: 'bold'
               }}>
-                ${getCurrentValue().toLocaleString()}
+                ₹{getCurrentValue().toLocaleString()}
               </Typography>
               <Box sx={{ mt: 2 }}>
                 <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
@@ -329,7 +329,7 @@ const InvestmentsPage = () => {
                       {investment.name}
                     </Typography>
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                      ${investment.amount.toLocaleString()}
+                      ₹{investment.amount.toLocaleString()}
                     </Typography>
                   </Box>
                   <Box>
@@ -452,7 +452,7 @@ const InvestmentsPage = () => {
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               InputProps={{
-                startAdornment: <Typography>$</Typography>,
+                startAdornment: <Typography>₹</Typography>,
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
