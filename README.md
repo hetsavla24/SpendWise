@@ -121,7 +121,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 - [YASH SAWANT] - Full Stack Developer
-- [VIHAAN SHINE] - ML Engineer
+- [VIHAAN SHINDE] - ML Engineer
 - [PRATHAM SHIRBATE] - UI/UX Designer
 
 ## 📞 Contact
