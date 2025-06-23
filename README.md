@@ -1,7 +1,6 @@
 # SpendWise: Smart Personal Finance Management System
 
-<div align="center">
-  <img src="docs/images/logo.png" alt="SpendWise Logo" width="200"/>
+
   
   ![GitHub](https://img.shields.io/github/license/yourusername/spendwise)
   ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
