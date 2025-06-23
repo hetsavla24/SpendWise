@@ -120,14 +120,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 - [YASH SAWANT] - Full Stack Developer
-- [VIHAAN SHINDE] - ML Engineer
-- [PRATHAM SHIRBATE] - UI/UX Designer
+- [HET SAVLA] - ML Engineer
 
 ## 📞 Contact
 
 For any queries or support, please reach out to:
-- Email: sawash3072@gmail.com
-- GitHub Issues: [Create an issue](https://github.com/SytherAsh/SpendWise/issues)
+- Email: hetsavla2004@gmail.com
 
 ---
 
